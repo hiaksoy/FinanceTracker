@@ -1,4 +1,5 @@
-﻿using System.Transactions;
+﻿
+using FinanceTracker.Domain.Entities;
 
 namespace FinanceTracker.Domain.Interfaces
 {
