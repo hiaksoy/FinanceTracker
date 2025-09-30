@@ -1,4 +1,3 @@
-
 using FinanceTracker.Application.Interfaces;
 using FinanceTracker.Application.Services;
 using FinanceTracker.Domain.Interfaces;
@@ -21,11 +20,9 @@ namespace FinanceTracker.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-
             builder.Services.AddScoped<ITransactionService, TransactionService>();
-
-
             builder.Services.AddControllers();
+            builder.Services.AddScoped<FluentValidation.IValidator<FinanceTracker.Application.DTOs.TransactionDto>, FinanceTracker.Api.Validators.TransactionDtoValidator>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

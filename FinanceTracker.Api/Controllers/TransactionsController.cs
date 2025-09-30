@@ -12,10 +12,12 @@ namespace FinanceTracker.Api.Controllers
 
 
         private readonly ITransactionService _transactionService;
+        private readonly FluentValidation.IValidator<TransactionDto> _validator;
 
-        public TransactionsController(ITransactionService transactionService)
+        public TransactionsController(ITransactionService transactionService, FluentValidation.IValidator<TransactionDto> validator)
         {
             _transactionService = transactionService;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -38,6 +40,10 @@ namespace FinanceTracker.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TransactionDto dto)
         {
+            var result = _validator.Validate(dto);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
+
             await _transactionService.AddAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
         }
@@ -46,6 +52,10 @@ namespace FinanceTracker.Api.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] TransactionDto dto)
         {
             dto.Id = id;
+            var result = _validator.Validate(dto);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
+
             await _transactionService.UpdateAsync(dto);
             return NoContent();
         }
